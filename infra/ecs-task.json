@@ -1,0 +1,75 @@
+{
+  "family": "ecs-python-app-observability",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "1024",
+  "executionRoleArn": "arn:aws:iam::750784683061:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::750784683061:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "app",
+      "image": "750784683061.dkr.ecr.us-west-2.amazonaws.com/ecs-python-app:latest",
+      "essential": true,
+      "portMappings": [{"containerPort":8080,"protocol":"tcp"}],
+      "environment": [
+        {"name":"OTEL_SERVICE_NAME","value":"ecs-python-app"},
+        {"name":"OTEL_EXPORTER_OTLP_ENDPOINT","value":"http://172.83.83.98:4317"},
+        {"name":"OTEL_EXPORTER_OTLP_PROTOCOL","value":"grpc"}
+      ],
+      "logConfiguration": {
+        "logDriver": "awsfirelens",
+        "options": {
+          "Name": "otlp",
+          "Host": "172.83.83.98",
+          "Port": "4318",
+          "Tls": "off",
+          "Mode": "grpc",
+          "Compress": "true",
+          "Retry_Limit": "2"
+        }
+      }
+    },
+    {
+      "name": "otel-collector",
+      "image": "172.83.83.98.dkr.ecr.us-west-2.amazonaws.com/ecs-otel-collector:latest",
+      "essential": false,
+      "cpu": 128,
+      "memory": 256,
+      "command": ["--config=/etc/otel/config.yaml"],
+      "mountPoints": [
+        {
+          "sourceVolume": "otel-config",
+          "containerPath": "/etc/otel"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awsfirelens",
+        "options": {
+          "Name":"otlp",
+          "Host":"172.83.83.98",
+          "Port":"4318",
+          "Tls":"off",
+          "Mode":"grpc"
+        }
+      }
+    },
+    {
+      "name": "log-router",
+      "image": "amazon/aws-for-fluent-bit:latest",
+      "essential": true,
+      "firelensConfiguration": {
+        "type": "fluentbit",
+        "options": {
+          "enable-ecs-log-metadata": "true"
+        }
+      }
+    }
+  ],
+  "volumes": [
+    {
+      "name": "otel-config",
+      "host": {}
+    }
+  ]
+}
