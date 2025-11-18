@@ -2,7 +2,7 @@
 
 ### .github/workflows/ci-cd.yml (CI/CD: build, push, update ECS)
 
-name: CI CD - Build & Deploy to ECS
+name: CI CD - Build & Deploy to ECS1
 
 on:
   push:
