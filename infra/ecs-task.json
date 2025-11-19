@@ -38,8 +38,8 @@
       "name": "otel-collector",
       "image": "750784683061.dkr.ecr.us-west-2.amazonaws.com/ecs-otel-collector:latest",
       "essential": false,
-      "cpu": 128,
-      "memory": 256,
+      "cpu": 512,
+      "memory": 512,
       "command": ["--config=/etc/otel/config.yaml"],
       "logConfiguration": {
         "logDriver": "awsfirelens",
@@ -64,3 +64,4 @@
     }
   ]
 }
+
