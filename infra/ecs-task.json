@@ -1,13 +1,15 @@
+
 {
   "family": "ecs-python-app-observability",
   "networkMode": "awsvpc",
   "requiresCompatibilities": ["FARGATE"],
-  "cpu": "4096",
-  "memory": "8192",
+  "cpu": "2048",
+  "memory": "4096",
   "executionRoleArn": "arn:aws:iam::750784683061:role/ecsTaskExecutionRole",
   "taskRoleArn": "arn:aws:iam::750784683061:role/ecsTaskExecutionRole",
 
   "containerDefinitions": [
+
     {
       "name": "app",
       "image": "750784683061.dkr.ecr.us-west-2.amazonaws.com/ecs-python-app:latest",
@@ -17,39 +19,45 @@
       ],
       "environment": [
         {"name": "OTEL_SERVICE_NAME", "value": "ecs-python-app"},
-        {"name": "OTEL_EXPORTER_OTLP_ENDPOINT", "value": "http://localhost:4317"},
+        {"name": "OTEL_EXPORTER_OTLP_ENDPOINT", "value": "http://otel-collector:4317"},
         {"name": "OTEL_EXPORTER_OTLP_PROTOCOL", "value": "grpc"},
         {"name": "OTEL_TRACES_EXPORTER", "value": "otlp"},
         {"name": "OTEL_LOGS_EXPORTER", "value": "otlp"},
         {"name": "OTEL_METRICS_EXPORTER", "value": "otlp"}
-
       ],
+
       "logConfiguration": {
         "logDriver": "awsfirelens",
         "options": {
           "Name": "forward",
-          "Host": "127.0.0.1",
           "Port": "24224"
         }
       }
     },
+
 
     {
       "name": "otel-collector",
       "image": "750784683061.dkr.ecr.us-west-2.amazonaws.com/ecs-otel-collector:latest",
       "essential": false,
-      "cpu": 1024,
-      "memory": 2048,
+      "cpu": 256,
+      "memory": 512,
       "command": ["--config=/etc/otel/config.yaml"],
+
+      "portMappings": [
+        {"containerPort": 4317},
+        {"containerPort": 4318}
+      ],
+
       "logConfiguration": {
         "logDriver": "awsfirelens",
         "options": {
           "Name": "forward",
-          "Host": "127.0.0.1",
           "Port": "24224"
         }
       }
     },
+
 
     {
       "name": "log-router",
@@ -62,8 +70,8 @@
         }
       }
     }
+
   ]
 }
-
 
 
