@@ -3,7 +3,7 @@
   "networkMode": "awsvpc",
   "requiresCompatibilities": ["FARGATE"],
   "cpu": "4096",
-  "memory": "4096",
+  "memory": "8192",
   "executionRoleArn": "arn:aws:iam::750784683061:role/ecsTaskExecutionRole",
   "taskRoleArn": "arn:aws:iam::750784683061:role/ecsTaskExecutionRole",
 
@@ -39,7 +39,7 @@
       "image": "750784683061.dkr.ecr.us-west-2.amazonaws.com/ecs-otel-collector:latest",
       "essential": false,
       "cpu": 1024,
-      "memory": 1024,
+      "memory": 2048,
       "command": ["--config=/etc/otel/config.yaml"],
       "logConfiguration": {
         "logDriver": "awsfirelens",
@@ -64,5 +64,6 @@
     }
   ]
 }
+
 
 
