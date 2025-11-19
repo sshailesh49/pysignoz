@@ -2,7 +2,7 @@
   "family": "ecs-python-app-observability",
   "networkMode": "awsvpc",
   "requiresCompatibilities": ["FARGATE"],
-  "cpu": "2048",
+  "cpu": "4096",
   "memory": "4096",
   "executionRoleArn": "arn:aws:iam::750784683061:role/ecsTaskExecutionRole",
   "taskRoleArn": "arn:aws:iam::750784683061:role/ecsTaskExecutionRole",
@@ -38,8 +38,8 @@
       "name": "otel-collector",
       "image": "750784683061.dkr.ecr.us-west-2.amazonaws.com/ecs-otel-collector:latest",
       "essential": false,
-      "cpu": 512,
-      "memory": 512,
+      "cpu": 1024,
+      "memory": 1024,
       "command": ["--config=/etc/otel/config.yaml"],
       "logConfiguration": {
         "logDriver": "awsfirelens",
@@ -64,4 +64,5 @@
     }
   ]
 }
+
 
